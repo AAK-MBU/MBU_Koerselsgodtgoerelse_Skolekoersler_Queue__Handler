@@ -68,6 +68,9 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
     except (TimeoutException, ElementClickInterceptedException, StaleElementReferenceException, NoSuchElementException, FileNotFoundError, AssertionError) as e:
         handle_opus_error(e, orchestrator_connection, queue_element)
 
+    finally:
+        browser.quit()
+
 
 def navigate_to_opus(browser):
     """Navigate to OPUS page and open required tabs."""
