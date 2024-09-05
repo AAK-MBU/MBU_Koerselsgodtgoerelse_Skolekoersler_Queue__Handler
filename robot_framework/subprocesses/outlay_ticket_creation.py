@@ -95,7 +95,7 @@ def fill_form(browser, element_data):
 
 def upload_attachment(browser, path, element_data):
     """Upload the attachment file to the browser form."""
-    wait_and_click(browser, By.ID, 'WD0189') # Click 'Vedhæft nyt' button
+    wait_and_click(browser, By.ID, 'WD0189')  # Click 'Vedhæft nyt' button
     WebDriverWait(browser, 10).until(
             lambda driver: driver.execute_script("return document.readyState") == "complete"
         )
