@@ -63,7 +63,6 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
         fill_form(browser, element_data)
         upload_attachment(browser, attachment_path)
         complete_form_and_submit(browser, element_data)
-        os.remove(attachment_path)
 
         orchestrator_connection.log_trace("Successfully created outlay ticket.")
 
@@ -72,6 +71,7 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
 
     finally:
         browser.quit()
+        os.remove(attachment_path)
 
 
 def navigate_to_opus(browser):
