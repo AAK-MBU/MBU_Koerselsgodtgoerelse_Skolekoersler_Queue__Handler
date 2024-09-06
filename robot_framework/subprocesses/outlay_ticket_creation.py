@@ -147,12 +147,10 @@ def complete_form_and_submit(browser, element_data):
     time.sleep(2)
 
     if not browser.find_elements(By.XPATH, "//*[contains(text(), 'Udgiftsbilag er kontrolleret og OK')]"):
-        time.sleep(10)
         raise AssertionError("Control check failed.")
 
     print("Clicking the Opret button...")
-    time.sleep(10)
-    # wait_and_click(browser, By.ID, 'WD1B')  # Click 'Opret' button
+    wait_and_click(browser, By.ID, 'WD1B')  # Click 'Opret' button
 
 
 def handle_opus_error(e, orchestrator_connection, queue_element):
