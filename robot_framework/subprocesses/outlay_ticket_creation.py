@@ -98,7 +98,7 @@ def fill_form(browser, element_data):
     enter_text(browser, 'WD0156', element_data['naeste_agent'])  # Næste agent
 
 
-def upload_attachment(browser, path, element_data, attachment_path):
+def upload_attachment(browser, attachment_path):
     """Upload the attachment file to the browser form."""
     wait_and_click(browser, By.ID, 'WD0189')  # Click 'Vedhæft nyt' button
     WebDriverWait(browser, 10).until(
