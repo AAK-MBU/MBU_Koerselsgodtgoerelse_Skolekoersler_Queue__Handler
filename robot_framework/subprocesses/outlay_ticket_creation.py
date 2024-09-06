@@ -121,6 +121,9 @@ def upload_attachment(browser, path, element_data):
     # Confirm attachment upload
     wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/div[1]/div/div[4]/div/table/tbody/tr/td[3]/table/tbody/tr/td[1]/div')  # Click 'OK' button
 
+    # Delete the file after upload
+    os.remove(attachment_path)
+
 
 def complete_form_and_submit(browser, element_data):
     """Complete the form and submit the ticket."""
