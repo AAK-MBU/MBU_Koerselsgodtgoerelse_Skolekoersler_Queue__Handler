@@ -61,7 +61,7 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
     try:
         navigate_to_opus(browser)
         fill_form(browser, element_data)
-        upload_attachment(browser, path, element_data, attachment_path)
+        upload_attachment(browser, attachment_path)
         complete_form_and_submit(browser, element_data)
         os.remove(attachment_path)
 
