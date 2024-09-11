@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, StaleElementReferenceException, NoSuchElementException
+from selenium.common.exceptions import ElementClickInterceptedException
 
 
 def initialize_browser():
@@ -21,8 +21,7 @@ def initialize_browser():
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("test-type")
     chrome_options.add_argument("--start-maximized")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--disable-search-engine-choice")
 
     return webdriver.Chrome(options=chrome_options)
 
@@ -37,12 +36,12 @@ def click_element_with_retries(browser, by, value, retries=4):
             element.click()
             print(f"Successfully clicked element '{value}' on attempt {attempt + 1}")
             return True
-        except (TimeoutException, ElementClickInterceptedException, StaleElementReferenceException) as e:
+        except ElementClickInterceptedException as e:
             print(f"Attempt {attempt + 1} failed: {e}")
             time.sleep(1)
 
     # If all retries are exhausted an exception
-    raise ElementClickInterceptedException(f"Failed to click element '{value}' after {retries} attempts")
+    raise RuntimeError(f"Failed to click element '{value}' after {retries} attempts")
 
 
 def decrypt_cpr(element_data):
@@ -65,7 +64,7 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
 
         orchestrator_connection.log_trace("Successfully created outlay ticket.")
 
-    except (TimeoutException, ElementClickInterceptedException, StaleElementReferenceException, NoSuchElementException, FileNotFoundError, AssertionError) as e:
+    except (RuntimeError) as e:
         print(f"Error handling OPUS: {e}")
         orchestrator_connection.log_error(f"Error handling OPUS: {e}")
 
@@ -149,7 +148,7 @@ def complete_form_and_submit(browser, element_data, orchestrator_connection):
 
     if not browser.find_elements(By.XPATH, "//*[contains(text(), 'Udgiftsbilag er kontrolleret og OK')]"):
         orchestrator_connection.log_error("Control check failed")
-        raise AssertionError("Control check failed.")
+        raise RuntimeError("Control check failed.")
 
     print("Clicking the Opret button...")
     wait_and_click(browser, By.ID, 'WD1B')  # Click 'Opret' button

@@ -16,6 +16,7 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
         print(error_message)
 
     try:
+        orchestrator_connection.log_info("Downloading file from OS2FORMS.")
         # Download the file bytes
         file_content = documents.download_file_bytes(url, os2_api_key)
 
@@ -33,8 +34,8 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
 
     except requests.exceptions.RequestException as e:
         error_message = f"Network error downloading file from OS2FORMS: {e}"
-        print(error_message)
+        raise RuntimeError(error_message) from e
 
     except OSError as e:
         error_message = f"File system error while saving the file: {e}"
-        print(error_message)
+        raise RuntimeError(error_message) from e
