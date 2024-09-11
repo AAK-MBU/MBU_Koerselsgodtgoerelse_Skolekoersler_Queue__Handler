@@ -10,23 +10,14 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     """Execute the primary process of the robot."""
     orchestrator_connection.log_trace("Starting the process.")
 
-    try:
-        process_args = json.loads(orchestrator_connection.process_arguments)
-        path_arg = process_args.get('path')
+    process_args = json.loads(orchestrator_connection.process_arguments)
+    path_arg = process_args.get('path')
 
-        if not path_arg:
-            raise ValueError("Missing 'path' in process arguments.")
+    os2_api_credential = orchestrator_connection.get_credential("os2_api")
+    os2_api_key = os2_api_credential.password
 
-        os2_api_credential = orchestrator_connection.get_credential("os2_api")
-        os2_api_key = os2_api_credential.password
+    queue_element = orchestrator_connection.get_next_queue_element(config.QUEUE_NAME)
 
-        queue_element = orchestrator_connection.get_next_queue_element(config.QUEUE_NAME)
-
-        fetch_receipt(queue_element, os2_api_key, path_arg, orchestrator_connection)
-        browser = initialize_browser()
-        handle_opus(browser, queue_element, path_arg, orchestrator_connection)
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-    finally:
-        orchestrator_connection.log_trace("Process completed.")
+    fetch_receipt(queue_element, os2_api_key, path_arg, orchestrator_connection)
+    browser = initialize_browser()
+    handle_opus(browser, queue_element, path_arg, orchestrator_connection)
