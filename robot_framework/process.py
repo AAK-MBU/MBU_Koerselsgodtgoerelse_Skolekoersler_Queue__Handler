@@ -27,5 +27,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     except Exception as e:
         orchestrator_connection.log_error(f"An error occurred during the process: {e}")
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
+        raise e
+
     finally:
         orchestrator_connection.log_trace("Process completed.")
