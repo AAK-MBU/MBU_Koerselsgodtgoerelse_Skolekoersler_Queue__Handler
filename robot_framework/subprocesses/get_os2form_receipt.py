@@ -2,12 +2,8 @@
 import json
 import os
 from mbu_dev_shared_components.os2forms import documents
-from OpenOrchestrator.database.queues import QueueStatus
 import requests
-
-
-class FileDownloadError(Exception):
-    """An exception raised when a file download fails."""
+from OpenOrchestrator.database.queues import QueueStatus
 
 
 def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
@@ -18,10 +14,10 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
 
     if not url or not uuid:
         error_message = "Missing 'attachment' URL or 'uuid' in element data."
-        print(error_message)
+        orchestrator_connection.log_error(error_message)
+        raise ValueError(error_message)
 
     try:
-        orchestrator_connection.log_info("Downloading file from OS2FORMS.")
         # Download the file bytes
         file_content = documents.download_file_bytes(url, os2_api_key)
 
@@ -38,13 +34,12 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
         orchestrator_connection.log_trace(f"File downloaded and saved successfully to {file_path}.")
 
     except requests.exceptions.RequestException as e:
-        error_message = "Network error downloading file from OS2FORMS"
-        orchestrator_connection.log_error(error_message)
-        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_message)
-        raise FileDownloadError(error_message) from e
+        error_message = f"Network error downloading file from OS2FORMS: {e}"
+        orchestrator_connection.log_error(error_message, "Error downloading receipt file.")
+        raise RuntimeError(error_message) from e
 
     except OSError as e:
-        error_message = "File system error while saving the file"
+        error_message = f"File system error while saving the file: {e}"
         orchestrator_connection.log_error(error_message)
-        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_message)
-        raise FileDownloadError(error_message) from e
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, "Failed to save receipt file.")
+        raise RuntimeError(error_message) from e
