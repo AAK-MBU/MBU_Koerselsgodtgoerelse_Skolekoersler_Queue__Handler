@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException
+from OpenOrchestrator.database.queues import QueueStatus
 
 
 def initialize_browser():
@@ -41,7 +42,8 @@ def click_element_with_retries(browser, by, value, retries=4):
             time.sleep(1)
 
     # If all retries are exhausted an exception
-    raise RuntimeError(f"Failed to click element '{value}' after {retries} attempts")
+    error_message = f"Failed to click element '{value}' after {retries} attempts"
+    raise RuntimeError(error_message)
 
 
 def decrypt_cpr(element_data):
@@ -65,8 +67,8 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
         orchestrator_connection.log_trace("Successfully created outlay ticket.")
 
     except (RuntimeError) as e:
-        print(f"Error handling OPUS: {e}")
         orchestrator_connection.log_error(f"Error handling OPUS: {e}")
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, f"Error handling OPUS: {e}")
 
     finally:
         browser.quit()
