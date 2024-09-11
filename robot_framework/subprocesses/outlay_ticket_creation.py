@@ -156,8 +156,7 @@ def complete_form_and_submit(browser, element_data):
 def handle_opus_error(e, orchestrator_connection, queue_element):
     """Handle errors in the OPUS process."""
     print(f"Error handling OPUS: {e}")
-    orchestrator_connection.log_error(f"Error handling OPUS: {e}")
-    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
+    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, str(e))
 
 
 def switch_to_frame(browser, frame):
