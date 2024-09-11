@@ -9,8 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, StaleElementReferenceException, NoSuchElementException
-from OpenOrchestrator.database.queues import QueueStatus
+from selenium.common.exceptions import ElementClickInterceptedException
 
 
 def initialize_browser():
@@ -22,8 +21,7 @@ def initialize_browser():
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("test-type")
     chrome_options.add_argument("--start-maximized")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--disable-search-engine-choice")
 
     return webdriver.Chrome(options=chrome_options)
 
@@ -38,12 +36,12 @@ def click_element_with_retries(browser, by, value, retries=4):
             element.click()
             print(f"Successfully clicked element '{value}' on attempt {attempt + 1}")
             return True
-        except (TimeoutException, ElementClickInterceptedException, StaleElementReferenceException) as e:
+        except ElementClickInterceptedException as e:
             print(f"Attempt {attempt + 1} failed: {e}")
             time.sleep(1)
 
-    # If all retries are exhausted, raise an exception
-    raise ElementClickInterceptedException(f"Failed to click element '{value}' after {retries} attempts")
+    # If all retries are exhausted an exception
+    raise RuntimeError(f"Failed to click element '{value}' after {retries} attempts")
 
 
 def decrypt_cpr(element_data):
@@ -61,13 +59,14 @@ def handle_opus(browser, queue_element, path, orchestrator_connection):
     try:
         navigate_to_opus(browser)
         fill_form(browser, element_data)
-        upload_attachment(browser, attachment_path)
-        complete_form_and_submit(browser, element_data)
+        upload_attachment(browser, attachment_path, orchestrator_connection)
+        complete_form_and_submit(browser, element_data, orchestrator_connection)
 
         orchestrator_connection.log_trace("Successfully created outlay ticket.")
 
-    except (TimeoutException, ElementClickInterceptedException, StaleElementReferenceException, NoSuchElementException, FileNotFoundError, AssertionError) as e:
-        handle_opus_error(e, orchestrator_connection, queue_element)
+    except (RuntimeError) as e:
+        print(f"Error handling OPUS: {e}")
+        orchestrator_connection.log_error(f"Error handling OPUS: {e}")
 
     finally:
         browser.quit()
@@ -98,7 +97,7 @@ def fill_form(browser, element_data):
     enter_text(browser, 'WD0156', element_data['naeste_agent'])  # Næste agent
 
 
-def upload_attachment(browser, attachment_path):
+def upload_attachment(browser, attachment_path, orchestrator_connection):
     """Upload the attachment file to the browser form."""
     wait_and_click(browser, By.ID, 'WD0189')  # Click 'Vedhæft nyt' button
     WebDriverWait(browser, 10).until(
@@ -110,6 +109,7 @@ def upload_attachment(browser, attachment_path):
 
     # Upload the file
     if not os.path.isfile(attachment_path):
+        orchestrator_connection.log_error("File not found")
         raise FileNotFoundError(f"File not found: {attachment_path}")
 
     time.sleep(3)
@@ -123,7 +123,7 @@ def upload_attachment(browser, attachment_path):
     wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/div[1]/div/div[4]/div/table/tbody/tr/td[3]/table/tbody/tr/td[1]/div')  # Click 'OK' button
 
 
-def complete_form_and_submit(browser, element_data):
+def complete_form_and_submit(browser, element_data, orchestrator_connection):
     """Complete the form and submit the ticket."""
     browser.switch_to.default_content()
     switch_to_frame(browser, 'contentAreaFrame')
@@ -147,17 +147,12 @@ def complete_form_and_submit(browser, element_data):
     time.sleep(2)
 
     if not browser.find_elements(By.XPATH, "//*[contains(text(), 'Udgiftsbilag er kontrolleret og OK')]"):
-        raise AssertionError("Control check failed.")
+        orchestrator_connection.log_error("Control check failed")
+        raise RuntimeError("Control check failed.")
 
     print("Clicking the Opret button...")
     wait_and_click(browser, By.ID, 'WD1B')  # Click 'Opret' button
-
-
-def handle_opus_error(e, orchestrator_connection, queue_element):
-    """Handle errors in the OPUS process."""
-    print(f"Error handling OPUS: {e}")
-    orchestrator_connection.log_error(f"Error handling OPUS: {e}")
-    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
+    orchestrator_connection.log_trace("Successfully clicked the created ticket")
 
 
 def switch_to_frame(browser, frame):

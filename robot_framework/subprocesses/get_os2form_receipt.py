@@ -3,7 +3,6 @@ import json
 import os
 from mbu_dev_shared_components.os2forms import documents
 import requests
-from OpenOrchestrator.database.queues import QueueStatus
 
 
 def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
@@ -14,10 +13,10 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
 
     if not url or not uuid:
         error_message = "Missing 'attachment' URL or 'uuid' in element data."
-        orchestrator_connection.log_error(error_message)
-        raise ValueError(error_message)
+        print(error_message)
 
     try:
+        orchestrator_connection.log_info("Downloading file from OS2FORMS.")
         # Download the file bytes
         file_content = documents.download_file_bytes(url, os2_api_key)
 
@@ -35,11 +34,8 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
 
     except requests.exceptions.RequestException as e:
         error_message = f"Network error downloading file from OS2FORMS: {e}"
-        orchestrator_connection.log_error(error_message)
         raise RuntimeError(error_message) from e
 
     except OSError as e:
         error_message = f"File system error while saving the file: {e}"
-        orchestrator_connection.log_error(error_message)
-        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
         raise RuntimeError(error_message) from e
