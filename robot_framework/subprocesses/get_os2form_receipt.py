@@ -5,6 +5,10 @@ from mbu_dev_shared_components.os2forms import documents
 import requests
 
 
+class FileDownloadError(Exception):
+    """An exception raised when a file download fails."""
+
+
 def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
     """Fetch a receipt from OS2FORMS and save it to the specified path."""
     element_data = json.loads(queue_element.data)
@@ -34,8 +38,8 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
 
     except requests.exceptions.RequestException as e:
         error_message = f"Network error downloading file from OS2FORMS: {e}"
-        raise RuntimeError(error_message) from e
+        raise FileDownloadError(error_message) from e
 
     except OSError as e:
         error_message = f"File system error while saving the file: {e}"
-        raise RuntimeError(error_message) from e
+        raise FileDownloadError(error_message) from e
