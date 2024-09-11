@@ -2,6 +2,7 @@
 import json
 import os
 from mbu_dev_shared_components.os2forms import documents
+from OpenOrchestrator.database.queues import QueueStatus
 import requests
 
 
@@ -38,8 +39,12 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
 
     except requests.exceptions.RequestException as e:
         error_message = "Network error downloading file from OS2FORMS"
+        orchestrator_connection.log_error(error_message)
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_message)
         raise FileDownloadError(error_message) from e
 
     except OSError as e:
         error_message = "File system error while saving the file"
+        orchestrator_connection.log_error(error_message)
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_message)
         raise FileDownloadError(error_message) from e
