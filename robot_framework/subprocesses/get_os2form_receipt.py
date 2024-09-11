@@ -37,9 +37,9 @@ def fetch_receipt(queue_element, os2_api_key, path, orchestrator_connection):
         orchestrator_connection.log_trace(f"File downloaded and saved successfully to {file_path}.")
 
     except requests.exceptions.RequestException as e:
-        error_message = f"Network error downloading file from OS2FORMS: {e}"
+        error_message = "Network error downloading file from OS2FORMS"
         raise FileDownloadError(error_message) from e
 
     except OSError as e:
-        error_message = f"File system error while saving the file: {e}"
+        error_message = "File system error while saving the file"
         raise FileDownloadError(error_message) from e
