@@ -1,7 +1,6 @@
 """This module contains the main process of the robot."""
 import json
 from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
-from OpenOrchestrator.database.queues import QueueStatus
 from robot_framework import config
 from robot_framework.subprocesses.get_os2form_receipt import fetch_receipt
 from robot_framework.subprocesses.outlay_ticket_creation import initialize_browser, handle_opus
