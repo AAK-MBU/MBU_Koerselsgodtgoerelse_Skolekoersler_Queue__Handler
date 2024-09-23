@@ -22,6 +22,7 @@ dependencies = [
     "requests",
     "pynput",
     "selenium"
+    "pandas"
 ]
 
 [project.optional-dependencies]
@@ -31,5 +32,6 @@ dev = [
   "mbu_dev_shared_components == 0.0.49",
   "requests",
   "pynput",
-  "selenium"
+  "selenium",
+  "pandas"
 ]
