@@ -39,21 +39,23 @@ def process_single_queue_element(queue_element, os2_api_key, path_arg, orchestra
     """Process a single queue element."""
     try:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.IN_PROGRESS)
-        element_data = json.loads(queue_element.data)
         orchestrator_connection.log_trace(f"Processing queue element ID: {queue_element.id}")
 
         folder_path = fetch_receipt(queue_element, os2_api_key, path_arg, orchestrator_connection)
         status, error = handle_opus(queue_element, folder_path, orchestrator_connection)
 
         error_status = {"status": status, "error": error}
-        handle_processing_status(status, error, queue_element, element_data, folder_path, path_arg, orchestrator_connection)
+        handle_processing_status(error_status, queue_element, folder_path, path_arg, orchestrator_connection)
 
     except Exception as e:  # pylint: disable=broad-except
         handle_unexpected_error(e, queue_element, orchestrator_connection, path_arg)
 
 
-def handle_processing_status(status, error, queue_element, element_data, folder_path, path_arg, orchestrator_connection):
+def handle_processing_status(error_status, queue_element, folder_path, path_arg, orchestrator_connection):
     """Handle the status of processing a queue element."""
+    element_data = json.loads(queue_element.data)
+    status = error_status.get("status")
+    error = error_status.get("error")
     failed = status != "Completed"
     if status == "Completed":
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE)
