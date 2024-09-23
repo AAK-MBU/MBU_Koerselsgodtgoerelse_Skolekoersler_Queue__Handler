@@ -45,6 +45,7 @@ def process_single_queue_element(queue_element, os2_api_key, path_arg, orchestra
         folder_path = fetch_receipt(queue_element, os2_api_key, path_arg, orchestrator_connection)
         status, error = handle_opus(queue_element, folder_path, orchestrator_connection)
 
+        error_status = {"status": status, "error": error}
         handle_processing_status(status, error, queue_element, element_data, folder_path, path_arg, orchestrator_connection)
 
     except Exception as e:  # pylint: disable=broad-except
