@@ -23,7 +23,7 @@ dependencies = [
     "pynput",
     "selenium",
     "pandas",
-    "office365"
+    "Office365-REST-Python-Client"
 ]
 
 [project.optional-dependencies]
@@ -35,5 +35,5 @@ dev = [
   "pynput",
   "selenium",
   "pandas",
-  "office365"
+  "Office365-REST-Python-Client"
 ]
