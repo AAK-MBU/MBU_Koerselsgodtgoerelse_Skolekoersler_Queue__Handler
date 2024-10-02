@@ -29,7 +29,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
         first_element_data = json.loads(first_element.data)
         filename = first_element_data['filename']
 
-    update_sharepoint(orchestrator_connection, path_arg, filename, username, password)
+        update_sharepoint(orchestrator_connection, path_arg, filename, username, password)
 
     orchestrator_connection.log_trace("Process completed.")
 
