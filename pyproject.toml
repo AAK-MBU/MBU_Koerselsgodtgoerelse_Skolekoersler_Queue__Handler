@@ -22,7 +22,8 @@ dependencies = [
     "requests",
     "pynput",
     "selenium",
-    "pandas"
+    "pandas",
+    "office365"
 ]
 
 [project.optional-dependencies]
