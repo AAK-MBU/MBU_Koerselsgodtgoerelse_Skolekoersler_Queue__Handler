@@ -34,5 +34,6 @@ dev = [
   "requests",
   "pynput",
   "selenium",
-  "pandas"
+  "pandas",
+  "office365"
 ]
