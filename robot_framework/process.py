@@ -91,15 +91,17 @@ def remove_attachment_if_exists(folder_path, element_data, orchestrator_connecti
 
 def handle_error(error, error_type, queue_element, orchestrator_connection):
     """Handle errors."""
-    orchestrator_connection.log_error(f"{error_type}: {error if error else ''}")
-    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
+    error_message = f"{error_type}: {error if error else ''}"
+    orchestrator_connection.log_error(error_message)
+    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_message)
 
 
 def handle_unexpected_error(error, queue_element, orchestrator_connection, path_arg):
     """Handle unexpected errors."""
-    orchestrator_connection.log_error(f"Unexpected Error: {error}")
+    error_message = f"Unexpected Error: {error}"
+    orchestrator_connection.log_error(error_message)
     if queue_element:
-        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_message)
         handle_post_process(True, json.loads(queue_element.data), orchestrator_connection, path_arg)
 
 
