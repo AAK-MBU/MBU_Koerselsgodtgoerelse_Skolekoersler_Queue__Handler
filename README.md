@@ -16,7 +16,7 @@ It handles elements from the **Koerselsgodtgoerelse_egenbefordring** queue by fe
     - Creates a ticket in OPUS and uploads the receipt.
     - Opens the Excel file and marks the entry as either failed or successfully handled.
 
-3. **Upcoming Feature (Has to be manually done manually for now):**
+3. **Post process:**
     - Uploads the Excel file to the "Behandlet" (Processed) or "Fejlet" (Failed) folder in SharePoint.
     - For failed queue elements, it also uploads the associated attachments.
 
