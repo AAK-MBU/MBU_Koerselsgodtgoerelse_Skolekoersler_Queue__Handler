@@ -97,8 +97,8 @@ def upload_attachment(browser, attachment_path):
     """Upload the attachment file to the browser form."""
     wait_and_click(browser, By.ID, 'WD0189')  # Click 'Vedhæft nyt' button
     WebDriverWait(browser, 10).until(
-            lambda driver: driver.execute_script("return document.readyState") == "complete"
-        )
+        lambda driver: driver.execute_script("return document.readyState") == "complete"
+    )
     browser.switch_to.default_content()
     switch_to_frame(browser, 'URLSPW-0')
     wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/div[1]/div/div[3]/table/tbody/tr/td/div/div/span/span[2]/form')  # Click 'Vælg fil' button
