@@ -8,3 +8,4 @@ disable =
   W0603, # Unused variables
   C0413, # Import order
   C0415, # Import order
+  R0401, # Cyclic import
