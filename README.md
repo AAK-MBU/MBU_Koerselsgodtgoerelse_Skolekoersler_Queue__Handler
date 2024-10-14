@@ -6,20 +6,15 @@ It handles elements from the **Koerselsgodtgoerelse_egenbefordring** queue by fe
 
 ### Process:
 
-1. **Processing NEW Queue Elements:**
+1. **Processes next NEW Queue Element:**
     - Fetches the receipt from OS2Forms.
     - Creates a ticket in OPUS and uploads the receipt.
     - Opens the Excel file and marks the entry as either failed or successfully handled.
-
-2. **Processing FAILED Queue Elements:**
-    - Fetches the receipt from OS2Forms.
-    - Creates a ticket in OPUS and uploads the receipt.
-    - Opens the Excel file and marks the entry as either failed or successfully handled.
-
-3. **Post process:**
-    - Uploads the Excel file to the "Behandlet" (Processed) or "Fejlet" (Failed) folder in SharePoint.
-    - For failed queue elements, it also uploads the associated attachments.
 
 ### Arguments:
 
 - **path**: The same path as the `path` argument in the uploader robot or the location where the Excel file is stored.
+
+### Related robots:
+    - Queue uploader.
+    - Update sharepoint.
