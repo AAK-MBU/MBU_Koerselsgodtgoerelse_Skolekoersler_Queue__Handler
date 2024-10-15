@@ -4,13 +4,16 @@ import traceback
 
 from OpenOrchestrator.database.queues import QueueElement, QueueStatus
 from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
-
+from robot_framework.process import handle_post_process
 from robot_framework import config
 from robot_framework import error_screenshot
 
 
 class BusinessError(Exception):
     """An empty exception used to identify errors caused by breaking business rules"""
+
+
+MAX_ERROR_MESSAGE_LENGTH = 1000  # Replace with the actual maximum length of your SQL column
 
 
 def handle_error(message: str, error: Exception, queue_element: QueueElement | None, orchestrator_connection: OrchestratorConnection) -> None:
@@ -26,12 +29,19 @@ def handle_error(message: str, error: Exception, queue_element: QueueElement | N
         orchestrator_connection: A connection to OpenOrchestrator.
     """
     error_msg = f"{message}: {repr(error)}\n\nTrace:\n{traceback.format_exc()}"
-    error_email = orchestrator_connection.get_constant(config.ERROR_EMAIL).value
 
+    if len(error_msg) > MAX_ERROR_MESSAGE_LENGTH:
+        error_msg = error_msg[:MAX_ERROR_MESSAGE_LENGTH - 20] + '... (truncated)'
+
+    # error_email = orchestrator_connection.get_constant(config.ERROR_EMAIL).value
     orchestrator_connection.log_error(error_msg)
+
     if queue_element:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_msg)
-    error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
+
+    # error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
+
+    handle_post_process(True, queue_element, orchestrator_connection)
 
 
 def log_exception(orchestrator_connection: OrchestratorConnection) -> callable:

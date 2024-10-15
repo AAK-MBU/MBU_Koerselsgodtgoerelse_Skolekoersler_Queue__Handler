@@ -51,28 +51,21 @@ def decrypt_cpr(element_data):
 
 def handle_opus(queue_element, path, orchestrator_connection):
     """Handle the OPUS ticket creation process."""
-    browser = initialize_browser()
+    from robot_framework.exceptions import BusinessError
+
     element_data = json.loads(queue_element.data)
     attachment_path = os.path.join(path, f'receipt_{element_data["uuid"]}.pdf')
 
-    try:
-        navigate_to_opus(browser)
-        fill_form(browser, element_data)
-        upload_attachment(browser, attachment_path)
+    browser = initialize_browser()
+    navigate_to_opus(browser)
+    fill_form(browser, element_data)
+    upload_attachment(browser, attachment_path)
 
-        if not complete_form_and_submit(browser, element_data):
-            return "BusinessError", None
+    if not complete_form_and_submit(browser, element_data):
+        raise BusinessError("Kontrolfejl.")
 
-        orchestrator_connection.log_trace("Successfully created outlay ticket.")
-        print("Successfully created outlay ticket.")
-        return "Completed", None
-
-    except Exception as e:  # pylint: disable=broad-except
-        orchestrator_connection.log_error(f"Robot Error: {e}")
-        return "RobotError", e
-
-    finally:
-        browser.quit()
+    orchestrator_connection.log_trace("Successfully created outlay ticket.")
+    print("Successfully created outlay ticket.")
 
 
 def navigate_to_opus(browser):
@@ -104,8 +97,8 @@ def upload_attachment(browser, attachment_path):
     """Upload the attachment file to the browser form."""
     wait_and_click(browser, By.ID, 'WD0189')  # Click 'Vedhæft nyt' button
     WebDriverWait(browser, 10).until(
-            lambda driver: driver.execute_script("return document.readyState") == "complete"
-        )
+        lambda driver: driver.execute_script("return document.readyState") == "complete"
+    )
     browser.switch_to.default_content()
     switch_to_frame(browser, 'URLSPW-0')
     wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/div[1]/div/div[3]/table/tbody/tr/td/div/div/span/span[2]/form')  # Click 'Vælg fil' button
