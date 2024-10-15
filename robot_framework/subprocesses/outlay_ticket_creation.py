@@ -9,7 +9,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from robot_framework.exceptions import BusinessError
 
 
 def initialize_browser():
@@ -121,6 +120,8 @@ def press_key(keyboard, key):
 
 def complete_form_and_submit(browser, element_data):
     """Complete the form and submit the ticket."""
+
+    from robot_framework.exceptions import BusinessError
 
     browser.switch_to.default_content()
     switch_to_frame(browser, 'contentAreaFrame')
