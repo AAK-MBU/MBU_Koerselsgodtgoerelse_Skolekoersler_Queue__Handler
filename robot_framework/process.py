@@ -10,7 +10,7 @@ from robot_framework.subprocesses.get_os2form_receipt import fetch_receipt
 DIR_PATH = None
 
 
-def process(orchestrator_connection: OrchestratorConnection, queue_element) -> None:
+def process(orchestrator_connection: OrchestratorConnection, queue_element, browser) -> None:
     """Main process function."""
     orchestrator_connection.log_trace("Starting the process.")
     process_args = json.loads(orchestrator_connection.process_arguments)
@@ -20,12 +20,12 @@ def process(orchestrator_connection: OrchestratorConnection, queue_element) -> N
     DIR_PATH = path_arg
 
     os2_api_key = orchestrator_connection.get_credential("os2_api").password
-    process_single_queue_element(queue_element, os2_api_key, path_arg, orchestrator_connection)
+    process_single_queue_element(queue_element, os2_api_key, path_arg, browser, orchestrator_connection)
 
     orchestrator_connection.log_trace("Process completed.")
 
 
-def process_single_queue_element(queue_element, os2_api_key, path_arg, orchestrator_connection):
+def process_single_queue_element(queue_element, os2_api_key, path_arg, browser, orchestrator_connection):
     """Process a single queue element."""
     from robot_framework.subprocesses.outlay_ticket_creation import handle_opus
     element_data = json.loads(queue_element.data)
@@ -33,7 +33,7 @@ def process_single_queue_element(queue_element, os2_api_key, path_arg, orchestra
     orchestrator_connection.log_trace(f"Processing queue element ID: {queue_element.id}")
 
     folder_path = fetch_receipt(queue_element, os2_api_key, path_arg, orchestrator_connection)
-    handle_opus(queue_element, folder_path, orchestrator_connection)
+    handle_opus(queue_element, folder_path, browser, orchestrator_connection)
     remove_attachment_if_exists(folder_path, element_data, orchestrator_connection)
     handle_post_process(False, queue_element, orchestrator_connection)
 
@@ -81,6 +81,6 @@ def update_dataframe(df, uuid, failed):
     """Update the dataframe with the status of the element."""
     df.loc[df['uuid'] == uuid, 'behandlet_fejl' if failed else 'behandlet_ok'] = 'x'
     if not failed:
-        df.loc[df['uuid'] == uuid, 'behandlet_fejl'] = ''
+        df.loc[df['uuid'] == uuid, 'behandlet_fejl'] = ' '
     else:
-        df.loc[df['uuid'] == uuid, 'behandlet_ok'] = ''
+        df.loc[df['uuid'] == uuid, 'behandlet_ok'] = ' '

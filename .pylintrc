@@ -1,12 +1,13 @@
-[pylint.messages_control]
-disable = 
-  C0301, # Line too long
-  I1101, E1101, # C-modules members
-  R0913, # Too many arguments
-  R0914, # Too many local variables
-  W0611, # Unused arguments
-  W0603, # Unused variables
-  C0413, # Import order
-  C0415, # Import order
-  R0401, # Cyclic import
-  F401 # Unused import
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+  "C0301", # Line too long
+  "I1101", "E1101", # C-modules members
+  "R0913", # Too many arguments
+  "R0914", # Too many local variables
+  "W0611", # Unused arguments
+  "W0603", # Unused variables
+  "C0413", # Import order
+  "C0415", # Import order
+  "R0401", # Cyclic import
+  "F401"  # Unused import
+]
