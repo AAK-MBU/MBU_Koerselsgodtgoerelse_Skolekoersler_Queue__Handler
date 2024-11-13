@@ -54,7 +54,7 @@ def main():
 
                 try:
                     process.process(orchestrator_connection, queue_element, browser)
-                    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE)
+                    orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE, "Success")
                     queue_element = None  # Reset the queue element on success
 
                 except BusinessError as error:

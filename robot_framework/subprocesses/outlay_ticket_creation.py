@@ -17,12 +17,14 @@ def initialize_browser():
     prefs = {
         "safebrowsing.enabled": False
     }
+
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("test-type")
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("--disable-web-security")
     chrome_options.add_argument("--allow-running-insecure-content")
     chrome_options.add_argument("--disable-search-engine-choice-screen")
+    chrome_options.add_argument("--incognito")
 
     return webdriver.Chrome(options=chrome_options)
 
@@ -55,7 +57,10 @@ def handle_opus(queue_element, path, browser, orchestrator_connection):
     element_data = json.loads(queue_element.data)
     attachment_path = os.path.join(path, f'receipt_{element_data["uuid"]}.pdf')
 
-    navigate_to_opus(browser)
+    opus_username = orchestrator_connection.get_credential("egenbefordring_udbetaling").username
+    opus_password = orchestrator_connection.get_credential("egenbefordring_udbetaling").password
+
+    navigate_to_opus(browser, opus_username, opus_password)
     fill_form(browser, element_data)
     upload_attachment(browser, attachment_path)
 
@@ -65,9 +70,13 @@ def handle_opus(queue_element, path, browser, orchestrator_connection):
     print("Successfully created outlay ticket.")
 
 
-def navigate_to_opus(browser):
+def navigate_to_opus(browser, username, password):
     """Navigate to OPUS page and open required tabs."""
-    browser.get("https://ssolaunchpad.kmd.dk/?kommune=1574&start=portal")
+    browser.get("https://portal.kmd.dk/irj/portal")
+    wait_and_click(browser, By.ID, 'logonuidfield')
+    enter_text(browser, 'logonuidfield', {username})
+    enter_text(browser, 'logonpassfield', {password})
+    wait_and_click(browser, By.ID, 'buttonLogon')
     WebDriverWait(browser, 90).until(EC.presence_of_element_located((By.XPATH, "//div[@class='TabText_SmallTabs' and text()='Min Økonomi']")))
     wait_and_click(browser, By.XPATH, "//div[@class='TabText_SmallTabs' and text()='Min Økonomi']")
     wait_and_click(browser, By.XPATH, "//div[text()='Bilag og fakturaer']")
@@ -175,5 +184,5 @@ def enter_text(browser, element_id, text):
 def wait_and_click(browser, by, value):
     """Wait for an element to be clickable, then click it."""
 
-    WebDriverWait(browser, 30).until(EC.presence_of_element_located((by, value)))
+    WebDriverWait(browser, 50).until(EC.presence_of_element_located((by, value)))
     click_element_with_retries(browser, by, value)
