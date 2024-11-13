@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def initialize_browser():
+def initialize_browser(opus_username, opus_password):
     """Initialize the Selenium Chrome WebDriver."""
     chrome_options = Options()
     prefs = {
@@ -26,7 +26,11 @@ def initialize_browser():
     chrome_options.add_argument("--disable-search-engine-choice-screen")
     chrome_options.add_argument("--incognito")
 
-    return webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(options=chrome_options)
+
+    login_to_opus(browser, opus_username, opus_password)
+
+    return browser
 
 
 def click_element_with_retries(browser, by, value, retries=4):
@@ -57,10 +61,7 @@ def handle_opus(queue_element, path, browser, orchestrator_connection):
     element_data = json.loads(queue_element.data)
     attachment_path = os.path.join(path, f'receipt_{element_data["uuid"]}.pdf')
 
-    opus_username = orchestrator_connection.get_credential("egenbefordring_udbetaling").username
-    opus_password = orchestrator_connection.get_credential("egenbefordring_udbetaling").password
-
-    navigate_to_opus(browser, opus_username, opus_password)
+    navigate_to_opus(browser)
     fill_form(browser, element_data)
     upload_attachment(browser, attachment_path)
 
@@ -70,13 +71,18 @@ def handle_opus(queue_element, path, browser, orchestrator_connection):
     print("Successfully created outlay ticket.")
 
 
-def navigate_to_opus(browser, username, password):
-    """Navigate to OPUS page and open required tabs."""
+def login_to_opus(browser, username, password):
+    """Login to OPUS."""
     browser.get("https://portal.kmd.dk/irj/portal")
     wait_and_click(browser, By.ID, 'logonuidfield')
     enter_text(browser, 'logonuidfield', {username})
     enter_text(browser, 'logonpassfield', {password})
     wait_and_click(browser, By.ID, 'buttonLogon')
+
+
+def navigate_to_opus(browser):
+    """Navigate to OPUS page and open required tabs."""
+    browser.get("https://portal.kmd.dk/irj/portal")
     wait_and_click(browser, By.XPATH, "//div[text()='Min Økonomi']")
     wait_and_click(browser, By.XPATH, "//div[text()='Bilag og fakturaer']")
     wait_and_click(browser, By.XPATH, "/html/body/div[1]/table/tbody/tr[1]/td/div/div[1]/div[9]/div[2]/span[2]")
