@@ -77,8 +77,7 @@ def navigate_to_opus(browser, username, password):
     enter_text(browser, 'logonuidfield', {username})
     enter_text(browser, 'logonpassfield', {password})
     wait_and_click(browser, By.ID, 'buttonLogon')
-    WebDriverWait(browser, 90).until(EC.presence_of_element_located((By.XPATH, "//div[@class='TabText_SmallTabs' and text()='Min Økonomi']")))
-    wait_and_click(browser, By.XPATH, "//div[@class='TabText_SmallTabs' and text()='Min Økonomi']")
+    wait_and_click(browser, By.XPATH, "//div[text()='Min Økonomi']")
     wait_and_click(browser, By.XPATH, "//div[text()='Bilag og fakturaer']")
     wait_and_click(browser, By.XPATH, "/html/body/div[1]/table/tbody/tr[1]/td/div/div[1]/div[9]/div[2]/span[2]")
 
