@@ -23,6 +23,8 @@ def main():
 
     orchestrator_connection.log_trace("Robot Framework started.")
     initialize.initialize(orchestrator_connection)
+    opus_username = orchestrator_connection.get_credential("egenbefordring_udbetaling").username
+    opus_password = orchestrator_connection.get_credential("egenbefordring_udbetaling").password
 
     browser = None
     queue_element = None
@@ -38,7 +40,7 @@ def main():
                 queue_element = orchestrator_connection.get_next_queue_element(config.QUEUE_NAME)
 
             if browser is None:
-                browser = initialize_browser()
+                browser = initialize_browser(opus_username, opus_password)
 
             # Queue loop
             while task_count < config.MAX_TASK_COUNT:
@@ -69,7 +71,7 @@ def main():
             error_count += 1
             handle_error(f"Process Error #{error_count}", error, queue_element, orchestrator_connection)
             if browser is None:
-                browser = initialize_browser()
+                browser = initialize_browser(opus_username, opus_password)
 
     reset.clean_up(orchestrator_connection)
     reset.close_all(orchestrator_connection)
