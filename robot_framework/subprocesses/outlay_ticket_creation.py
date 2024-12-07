@@ -52,6 +52,7 @@ def decrypt_cpr(element_data):
     """Decrypt the CPR number from the element data."""
     encryptor = Encryptor()
     encrypted_cpr = element_data['cpr_encrypted']
+
     return encryptor.decrypt(encrypted_cpr.encode('utf-8'))
 
 
@@ -75,8 +76,8 @@ def login_to_opus(browser, username, password):
     """Login to OPUS."""
     browser.get("https://portal.kmd.dk/irj/portal")
     wait_and_click(browser, By.ID, 'logonuidfield')
-    enter_text(browser, 'logonuidfield', {username})
-    enter_text(browser, 'logonpassfield', {password})
+    enter_text(browser, By.ID, 'logonuidfield', {username})
+    enter_text(browser, By.ID, 'logonpassfield', {password})
     wait_and_click(browser, By.ID, 'buttonLogon')
 
 
@@ -93,20 +94,20 @@ def fill_form(browser, element_data):
     browser.switch_to.default_content()
     switch_to_frame(browser, 'contentAreaFrame')
     switch_to_frame(browser, 'ivuFrm_page0ivu0')
-    enter_text(browser, 'WD9A', decrypt_cpr(element_data))  # Kreditor
-    wait_and_click(browser, By.ID, 'WD9D')  # Hent button
+    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[1]/span/input', decrypt_cpr(element_data))  # Kreditor
+    wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[2]/div')  # Hent button
     time.sleep(3)
 
-    enter_text(browser, 'WDF6', element_data['posteringstekst'])  # Udbetalingstekst
-    enter_text(browser, 'WD0112', element_data['posteringstekst'])  # Posteringstekst
-    enter_text(browser, 'WD0119', element_data['reference'])  # Reference
-    enter_text(browser, 'WD0123', element_data['beloeb'])  # Beløb
-    enter_text(browser, 'WD0156', element_data['naeste_agent'])  # Næste agent
+    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[2]/span/input', element_data['posteringstekst'])  # Udbetalingstekst
+    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td[2]/span/input', element_data['posteringstekst'])  # Posteringstekst
+    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[3]/td[2]/span/input', element_data['reference'])  # Reference
+    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[4]/td[2]/div/div/table/tbody/tr/td[1]/span/input', element_data['beloeb'])  # Beløb
+    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[4]/td/div/div/table/tbody/tr[2]/td[2]/div/div/table/tbody/tr[1]/td[1]/span/input', element_data['naeste_agent'])  # Næste agent
 
 
 def upload_attachment(browser, attachment_path):
     """Upload the attachment file to the browser form."""
-    wait_and_click(browser, By.ID, 'WD0189')  # Click 'Vedhæft nyt' button
+    wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/div/table/tbody/tr[3]/td/div/span/span/div/span/span[1]/table/thead/tr[2]/th/div/div/div/span/div')  # Click 'Vedhæft nyt' button
     WebDriverWait(browser, 20).until(
         lambda driver: driver.execute_script("return document.readyState") == "complete"
     )
@@ -143,7 +144,7 @@ def complete_form_and_submit(browser, element_data):
 
     keyboard = Controller()
 
-    wait_and_click(browser, By.ID, 'WD0222')
+    wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[2]/td/div/span/span[1]/div/span/span[1]/div/div/div/span/span/table/tbody/tr[2]/td/div/table/tbody/tr/td/div/table/tbody/tr[1]/td/table/tbody/tr[2]/td[3]/table/tbody/tr/td/span')
     keyboard.type(element_data['arts_konto'])  # Artskonto
 
     press_key(keyboard, Key.tab)
@@ -159,14 +160,14 @@ def complete_form_and_submit(browser, element_data):
 
     time.sleep(1)
 
-    wait_and_click(browser, By.ID, 'WD1E')  # Click 'Kontroller' button
+    wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[1]/td/div/div[2]/div/div/div/span[4]/div')  # Click 'Kontroller' button
     time.sleep(4)
 
     # Check for business error here
     if not browser.find_elements(By.XPATH, "//*[contains(text(), 'Udgiftsbilag er kontrolleret og OK')]"):
         raise BusinessError("Fejl ved kontrol af udgiftsbilag.")
 
-    wait_and_click(browser, By.ID, 'WD1B')  # Click 'Opret' button
+    wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[1]/td/div/div[2]/div/div/div/span[1]/div')  # Click 'Opret' button
     time.sleep(4)
     if not browser.find_elements(By.XPATH, "//*[contains(text(), 'er oprettet')]"):
         time.sleep(1)
@@ -178,10 +179,10 @@ def switch_to_frame(browser, frame):
     WebDriverWait(browser, 30).until(EC.frame_to_be_available_and_switch_to_it((By.ID, frame)))
 
 
-def enter_text(browser, element_id, text):
+def enter_text(browser, by, value, text):
     """Helper to enter text into a form element."""
     input_element = WebDriverWait(browser, 30).until(
-        EC.presence_of_element_located((By.ID, element_id))
+        EC.presence_of_element_located((by, value))
     )
     input_element.send_keys(text)
 
