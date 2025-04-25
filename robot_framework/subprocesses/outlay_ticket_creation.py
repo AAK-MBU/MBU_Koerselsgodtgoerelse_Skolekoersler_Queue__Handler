@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 def initialize_browser(opus_username, opus_password):
@@ -94,15 +95,82 @@ def fill_form(browser, element_data):
     browser.switch_to.default_content()
     switch_to_frame(browser, 'contentAreaFrame')
     switch_to_frame(browser, 'ivuFrm_page0ivu0')
-    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[1]/span/input', decrypt_cpr(element_data))  # Kreditor
-    wait_and_click(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[2]/div')  # Hent button
+    root_xpath = "/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/"
+    enter_text(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[1]/span/input",
+        decrypt_cpr(element_data),
+    )  # Kreditor
+    wait_and_click(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[2]/div",
+    )  # Hent button
     time.sleep(3)
 
-    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[2]/span/input', element_data['posteringstekst'])  # Udbetalingstekst
-    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td[2]/span/input', element_data['posteringstekst'])  # Posteringstekst
-    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[3]/td[2]/span/input', element_data['reference'])  # Reference
-    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[4]/td[2]/div/div/table/tbody/tr/td[1]/span/input', element_data['beloeb'])  # Beløb
-    enter_text(browser, By.XPATH, '/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[4]/td/div/div/table/tbody/tr[2]/td[2]/div/div/table/tbody/tr[1]/td[1]/span/input', element_data['naeste_agent'])  # Næste agent
+    enter_text(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[2]/span/input",
+        element_data["posteringstekst"],
+    )  # Udbetalingstekst
+    enter_text(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td[2]/span/input",
+        element_data["posteringstekst"],
+    )  # Posteringstekst
+    enter_text(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[3]/td[2]/span/input",
+        element_data["reference"],
+    )  # Reference
+    enter_text(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[4]/td[2]/div/div/table/tbody/tr/td[1]/span/input",
+        element_data["beloeb"],
+    )  # Beløb
+    enter_text(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[4]/td/div/div/table/tbody/tr[2]/td[2]/div/div/table/tbody/tr[1]/td[1]/span/input",
+        element_data["naeste_agent"],
+    )  # Næste agent
+
+    # Click item next to "udbeatlingstekst" to add column with child name
+    wait_and_click(
+        browser,
+        By.XPATH,
+        root_xpath
+        + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[3]/div",
+    )
+    browser.switch_to.default_content()  # Popup is not appearing on current frame
+    switch_to_frame(browser, "URLSPW-0")  # Switch to popup
+    # Type text at cursor (element id is dynamic but cursor always starts at next empty line)
+    actions = ActionChains(browser)
+    actions.send_keys(element_data["barnets_navn"])
+    actions.perform()
+    # Click "Gem"
+    # Find all buttons in frame:
+    buttons = browser.find_elements(By.CLASS_NAME, "lsButton")
+    # Search and click on "gem"
+    for button in buttons:
+        if button.text.lower() == "gem":
+            button.click()
+    # Back to previous frame
+    browser.switch_to.default_content()
+    switch_to_frame(browser, "contentAreaFrame")
+    switch_to_frame(browser, "ivuFrm_page0ivu0")
 
 
 def upload_attachment(browser, attachment_path):
