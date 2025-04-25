@@ -99,51 +99,44 @@ def fill_form(browser, element_data):
     enter_text(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[1]/span/input",
+        root_xpath + "tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[1]/span/input",
         decrypt_cpr(element_data),
     )  # Kreditor
     wait_and_click(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[2]/div",
+        root_xpath + "tr[2]/td/div/div/table/tbody/tr/td[1]/div/div/table/tbody/tr[1]/td[2]/div/div/table/tbody/tr/td[2]/div",
     )  # Hent button
     time.sleep(3)
 
     enter_text(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[2]/span/input",
+        root_xpath + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[2]/span/input",
         element_data["posteringstekst"],
     )  # Udbetalingstekst
     enter_text(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td[2]/span/input",
+        root_xpath + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]/td[2]/span/input",
         element_data["posteringstekst"],
     )  # Posteringstekst
     enter_text(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[3]/td[2]/span/input",
+        root_xpath + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[3]/td[2]/span/input",
         element_data["reference"],
     )  # Reference
     enter_text(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[4]/td[2]/div/div/table/tbody/tr/td[1]/span/input",
+        root_xpath + "tr[3]/td/div/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[4]/td[2]/div/div/table/tbody/tr/td[1]/span/input",
         element_data["beloeb"],
     )  # Beløb
     enter_text(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[4]/td/div/div/table/tbody/tr[2]/td[2]/div/div/table/tbody/tr[1]/td[1]/span/input",
+        root_xpath + "tr[4]/td/div/div/table/tbody/tr[2]/td[2]/div/div/table/tbody/tr[1]/td[1]/span/input",
         element_data["naeste_agent"],
     )  # Næste agent
 
@@ -151,8 +144,7 @@ def fill_form(browser, element_data):
     wait_and_click(
         browser,
         By.XPATH,
-        root_xpath
-        + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[3]/div",
+        root_xpath + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[3]/div",
     )
     browser.switch_to.default_content()  # Popup is not appearing on current frame
     switch_to_frame(browser, "URLSPW-0")  # Switch to popup
