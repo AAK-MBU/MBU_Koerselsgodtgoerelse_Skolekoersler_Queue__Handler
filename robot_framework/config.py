@@ -22,6 +22,6 @@ ERROR_EMAIL = "Error Email"
 QUEUE_NAME = "Koerselsgodtgoerelse_egenbefordring"
 
 # The limit on how many queue elements to process
-MAX_TASK_COUNT = 100
+MAX_TASK_COUNT = 1
 
 # ----------------------
