@@ -1,10 +1,11 @@
 """This module contains various functions and classes to handle errors in the framework."""
 
 import traceback
+import json
 
 from OpenOrchestrator.database.queues import QueueElement, QueueStatus
 from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
-from robot_framework.process import handle_post_process
+from robot_framework.process import handle_post_process, get_status_params
 from robot_framework import config
 from robot_framework import error_screenshot
 
@@ -40,8 +41,10 @@ def handle_error(message: str, error: Exception, queue_element: QueueElement | N
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, error_msg)
 
     # error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
-
-    handle_post_process(True, queue_element, orchestrator_connection)
+    element_data = json.loads(queue_element.data)
+    form_id = element_data['uuid']
+    _, _, status_params_failed = get_status_params(form_id)
+    handle_post_process(True, queue_element, orchestrator_connection, status_params_failed)
 
 
 def log_exception(orchestrator_connection: OrchestratorConnection) -> callable:
