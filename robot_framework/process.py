@@ -77,7 +77,7 @@ def handle_post_process(failed, queue_element, orchestrator_connection: Orchestr
 
     execute_stored_procedure(
         connection_string,
-        "spUpdateProcessStatus",
+        "journalizing.sp_update_status",
         db_status
     )
     orchestrator_connection.log_trace(f"Element status updated to {'failed' if failed else 'succeeded'} in Excel file")
