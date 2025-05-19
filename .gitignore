@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 .vscode/
+run_single_form.py
