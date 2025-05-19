@@ -34,12 +34,12 @@ def process_single_queue_element(queue_element, os2_api_key, path_arg, browser, 
     connection_string = orchestrator_connection.get_constant("DbConnectionString").value
     element_data = json.loads(queue_element.data)
     form_id = element_data['uuid']
-    status_params_inprogress, status_params_success, _ = get_status_params(form_id)
+    status_params_inprogress, status_params_success, _, _ = get_status_params(form_id)
     orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.IN_PROGRESS)
     orchestrator_connection.log_trace(f"Processing queue element ID: {queue_element.id}")
     execute_stored_procedure(
         connection_string,
-        "spUpdateProcessStatus",
+        "journalizing.sp_update_status",
         status_params_inprogress
     )
     folder_path = fetch_receipt(queue_element, os2_api_key, path_arg, orchestrator_connection)
@@ -128,4 +128,8 @@ def get_status_params(form_id: str):
         "Status": ("str", "Failed"),
         "form_id": ("str", f'{form_id}')
     }
-    return status_params_inprogress, status_params_success, status_params_failed
+    status_params_manual = {
+        "Status": ("str", "Manual"),
+        "form_id": ("str", f'{form_id}')
+    }
+    return status_params_inprogress, status_params_success, status_params_failed, status_params_manual
