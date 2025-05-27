@@ -112,6 +112,14 @@ def fill_form(browser, element_data):
     enter_text(
         browser,
         By.XPATH,
+        ("/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]"
+         "/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/div/table/"
+         "tbody/tr[1]/td/div/div/div/div/table/tbody/tr[2]/td/div/textarea"),
+        element_data['evt_kommentar']
+    )
+    enter_text(
+        browser,
+        By.XPATH,
         root_xpath + "tr[3]/td/div/div/table/tbody/tr[1]/td[1]/div/div/table/tbody/tr/td/div/div/table/tbody/tr[1]/td[2]/span/input",
         element_data["posteringstekst"],
     )  # Udbetalingstekst
