@@ -43,7 +43,7 @@ def handle_error(message: str, error: Exception, queue_element: QueueElement | N
     # error_screenshot.send_error_screenshot(error_email, error, orchestrator_connection.process_name)
     element_data = json.loads(queue_element.data)
     form_id = element_data['uuid']
-    _, _, status_params_failed = get_status_params(form_id)
+    _, _, status_params_failed, _ = get_status_params(form_id)
     handle_post_process(True, queue_element, orchestrator_connection, status_params_failed)
 
 
