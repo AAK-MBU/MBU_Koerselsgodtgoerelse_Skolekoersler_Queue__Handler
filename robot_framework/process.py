@@ -115,6 +115,7 @@ def get_status_params(form_id: str):
             - status_params_inprogress: Parameters indicating that the process is in progress.
             - status_params_success: Parameters indicating that the process completed successfully.
             - status_params_failed: Parameters indicating that the process has failed.
+            - status_params_manual: Parameters indicating that the process is handled manually.
     """
     status_params_inprogress = {
         "Status": ("str", "InProgress"),
