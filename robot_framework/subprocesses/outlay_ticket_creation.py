@@ -2,7 +2,6 @@
 import json
 import os
 import time
-import math
 from pynput.keyboard import Key, Controller
 from mbu_dev_shared_components.utils.fernet_encryptor import Encryptor
 from selenium import webdriver
@@ -116,7 +115,7 @@ def fill_form(browser, element_data):
         ("/html/body/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr/td/div/table/tbody/tr[2]/td/div/div/table/tbody/tr[2]"
          "/td/table/tbody/tr/td/div/div[1]/div/div/div/table/tbody/tr[1]/td/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/div/table/"
          "tbody/tr[1]/td/div/div/div/div/table/tbody/tr[2]/td/div/textarea"),
-        element_data['evt_kommentar'] if not math.isnan(element_data['evt_kommentar']) else ""
+        element_data['evt_kommentar'] if str(element_data['evt_kommentar']) != "nan" else ""
     )  # Kommentar
     enter_text(
         browser,
